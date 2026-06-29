@@ -1,32 +1,143 @@
 package backend.src.Service;
 
 import backend.src.Data.User;
+import backend.src.Db.Database;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class UserService {
 
+    private final Database db;
+
+    public UserService(Database db) {
+        this.db = db;
+    }
+
+
+    //Core Function
+
+    public User findUser(String username) {
+        String sql = "SELECT * FROM users WHERE username = ?";
+        
+        try (Connection c = db.getConnection();
+            PreparedStatement pstmt = c.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
+
+            //If a user is found, create a User object and return it:
+            if (rs.next()) {
+                User user = new User();
+                user.setUsername(rs.getString("username"));
+                user.setEmail(rs.getString("email"));
+                user.setName(rs.getString("name"));
+                user.setSurname(rs.getString("surname"));
+                user.setBirthdate(rs.getDate("birthdate").toString());
+                user.setGender(rs.getString("gender"));
+                user.setAddress(rs.getString("address"));
+                user.setPassword(rs.getString("password"));
+                user.setIsAdmin(rs.getBoolean("is_admin"));
+                return user;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
     //Admin Functions
-   
-    void createUser(User u) {
+
+    public void createUser(User u) {
+        registerUser(u);
     }
 
-    void viewUsers() {
+    public void viewUsers() {
     }
 
-    void updateUser(User u) {
+    public void updateUser(User u) {
     }
 
-    void deleteUser(User u) {
+    public void deleteUser(User u) {
     }
 
 
     //User Control Functions
 
-    void searchUser(User u) {
+    public boolean searchUser(String username) {
+        return findUser(username) != null;
     }
 
-    void controlPassword() {
+    public boolean searchEmail(String email) {
+        String sql = "SELECT * FROM users WHERE email = ?";
+        
+        try (Connection c = db.getConnection();
+            PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return true;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
+    public boolean controlPassword(User currentUser, String password) {
+        return currentUser.getPassword().equals(password);
+    }
+
+    public User loginUser(String username, String enteredPassword) {
+        User currentUser = findUser(username);
+       
+        if(currentUser == null) {
+            System.out.println("User not found.");
+            return null;
+        }
+
+        if (controlPassword(currentUser, enteredPassword) == true) {
+            System.out.println("Login successful.");
+            return currentUser;
+        } else {
+            System.out.println("Incorrect password.");
+            return null;
+        }
+    }
+    
+    public boolean registerUser(User u) {
+
+        // Add user to the database:
+        String sql = "INSERT INTO users (username, email, name, surname, birthdate, gender, address, password, is_admin) "
+        + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try (Connection c = db.getConnection();
+            PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, u.getUsername());
+            ps.setString(2, u.getEmail());
+            ps.setString(3, u.getName());
+            ps.setString(4, u.getSurname());
+            ps.setDate(5, java.sql.Date.valueOf(u.getBirthdate()));
+            ps.setString(6, u.getGender());
+            ps.setString(7, u.getAddress());
+            ps.setString(8, u.getPassword());
+            ps.setBoolean(9, false); // Default to non-admin user
+
+            ps.executeUpdate();
+                System.out.println("User registered successfully.");
+                return true;
+
+        } catch (SQLException e) {
+            e.printStackTrace();                
+            System.out.println("User registration failed.");
+                return false;
+        }
+    }
+
+    
 }
 
 

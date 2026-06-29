@@ -4,9 +4,10 @@ import backend.src.Data.Message;
 
 public class MessageService {
     
-        void sendMessage(Message m) {
+    public void sendMessage(Message m) {
     }
-    void viewMessages() {       
+    
+    public void viewMessages() {       
     }
 
 }

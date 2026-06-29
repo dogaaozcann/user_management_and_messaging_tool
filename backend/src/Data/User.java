@@ -50,12 +50,12 @@ public class User {
         this.gender = gender;
     }
 
-    private String adress;
-    public String getAdress() {
-        return adress;
+    private String address;
+    public String getAddress() {
+        return address;
     }
-    public void setAdress(String adress) {
-        this.adress = adress;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     private String password;
