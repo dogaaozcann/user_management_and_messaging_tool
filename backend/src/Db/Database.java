@@ -17,7 +17,7 @@ public class Database {
     public void createTables() {
             String userSql = """
             CREATE TABLE IF NOT EXISTS users (
-                username VARCHAR(12) UNIQUE NOT NULL,
+                username VARCHAR(12) PRIMARY KEY,
                 email VARCHAR(50) UNIQUE NOT NULL,
                 name VARCHAR(20) NOT NULL,
                 surname VARCHAR(20) NOT NULL,
@@ -34,7 +34,7 @@ public class Database {
                 id SERIAL PRIMARY KEY,
                 sender VARCHAR(12) REFERENCES users(username),
                 receiver VARCHAR(12) REFERENCES users(username),
-                timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                senttime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 subject VARCHAR(50),
                 content TEXT,
                 is_read BOOLEAN DEFAULT FALSE
@@ -54,3 +54,5 @@ public class Database {
         db.createTables();
     }
 }
+
+

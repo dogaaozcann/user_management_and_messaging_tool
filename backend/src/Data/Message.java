@@ -1,6 +1,15 @@
 package backend.src.Data;
 
 public class Message {
+
+    private static int id;
+    public static int getId() {
+        return id;
+    }
+    public static void setId(int id) {
+        Message.id = id;
+    }
+
     private String sender;
     public String getSender() {
         return sender;

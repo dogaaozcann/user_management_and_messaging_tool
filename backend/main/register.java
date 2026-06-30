@@ -6,18 +6,16 @@ import backend.src.Db.Database;
 import backend.src.Service.UserService;
 
 public class register {
-    void registerUser() {
+    void registerUser(Scanner scanner) {
         Database db = new Database();
         db.createTables();
         UserService userService = new UserService(db);
-        try (Scanner scanner = new Scanner(System.in)) {
 
-            System.out.println("\nWelcome to the User Registration. Type ESC to exit at any time.");
+            System.out.println("\nWelcome to the User Registration. Press enter to continue or type ESC to exit.");
 
             while (!scanner.nextLine().equals("ESC")) {
 
                 User newUser = new User();
-
 
                 System.out.print("Enter username: ");
                 String enteredUsernameRegister = scanner.nextLine();
@@ -59,12 +57,25 @@ public class register {
                     }
                 newUser.setSurname(enteredSurname);
 
-                System.out.print("Enter birthdate (DD-MM-YYYY): ");
+                System.out.print("Enter birthdate (YYYY-MM-DD): ");
                 newUser.setBirthdate(scanner.nextLine());
+                    if (newUser.getBirthdate().trim().isEmpty()) {
+                        System.out.println("Birthdate cannot be empty. Please enter a valid birthdate.");
+                        continue;
+                    }
 
-                System.out.print("Enter gender (M/F/Other): ");
+                System.out.print("Enter gender (F/M/Other): ");
                 newUser.setGender(scanner.nextLine());
-                        
+
+                    if(!newUser.getGender().equals("F") && !newUser.getGender().equals("M") && !newUser.getGender().equals("Other")) {
+                        System.out.println("Invalid gender. Please enter a valid gender.");
+                        continue;
+                    }
+                    if(newUser.getGender().trim().isEmpty()) {
+                        System.out.println("Gender cannot be empty. Please enter a valid gender.");
+                        continue;
+                    }
+
                 System.out.print("Enter address: ");
                 String enteredAddress = scanner.nextLine();
                     if (enteredAddress.trim().isEmpty()) {
@@ -79,14 +90,13 @@ public class register {
                         System.out.println("Password cannot be empty. Please enter a valid password.");
                         continue;
                     }
+
                 newUser.setPassword(enteredPassword);
 
-                    if (userService.registerUser(newUser)) {
-                        System.out.println("User registered successfully.\nLogging in...");
-                    } else {
-                        System.out.println("User registration failed. Please try again.");
-                    }
+                if (userService.registerUser(newUser)) {
+                    return;
+                }
+
             }
-        }
     }
 }

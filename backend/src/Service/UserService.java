@@ -26,7 +26,6 @@ public class UserService {
             pstmt.setString(1, username);
             ResultSet rs = pstmt.executeQuery();
 
-            //If a user is found, create a User object and return it:
             if (rs.next()) {
                 User user = new User();
                 user.setUsername(rs.getString("username"));
@@ -45,22 +44,6 @@ public class UserService {
             e.printStackTrace();
         }
         return null;
-    }
-
-
-    //Admin Functions
-
-    public void createUser(User u) {
-        registerUser(u);
-    }
-
-    public void viewUsers() {
-    }
-
-    public void updateUser(User u) {
-    }
-
-    public void deleteUser(User u) {
     }
 
 
@@ -104,7 +87,7 @@ public class UserService {
             System.out.println("Login successful.");
             return currentUser;
         } else {
-            System.out.println("Incorrect password.");
+            System.out.println("Incorrect password. Please try again.");
             return null;
         }
     }
@@ -124,20 +107,28 @@ public class UserService {
             ps.setString(6, u.getGender());
             ps.setString(7, u.getAddress());
             ps.setString(8, u.getPassword());
-            ps.setBoolean(9, false); // Default to non-admin user
+            ps.setBoolean(9, false); // Default to non-admin user.
 
             ps.executeUpdate();
                 System.out.println("User registered successfully.");
                 return true;
 
         } catch (SQLException e) {
-            e.printStackTrace();                
-            System.out.println("User registration failed.");
-                return false;
+            e.printStackTrace(); 
+            System.out.println("User registration failed. Please try again.");               
+            return false;
         }
     }
 
-    
+    public void printUser(User u) {
+        System.out.println("\nUsername: " + u.getUsername());
+        System.out.println("Email: " + u.getEmail());
+        System.out.println("Name: " + u.getName());
+        System.out.println("Surname: " + u.getSurname());
+        System.out.println("Birthdate: " + u.getBirthdate());
+        System.out.println("Gender: " + u.getGender());
+        System.out.println("Address: " + u.getAddress());   
+    } 
 }
 
 

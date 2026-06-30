@@ -6,13 +6,12 @@ import backend.src.Data.User;
 import backend.src.Service.UserService;
 
 public class login {
-    public void loginUser() {
+    public void loginUser(Scanner scanner) {
         Database db = new Database();
         db.createTables();
         UserService userService = new UserService(db);
-        try (Scanner scanner = new Scanner(System.in)) {
 
-            System.out.println("\nWelcome to the User Login. Type ESC to exit at any time.");
+            System.out.println("\nWelcome to the User Login. Press enter to continue or type ESC to exit.");
 
             while(!scanner.nextLine().equals("ESC")){
 
@@ -35,13 +34,10 @@ public class login {
                     }
                 User currentUser = userService.loginUser(enteredUsernameLogin, enteredPassword);
                     if (currentUser != null) {
-                        System.out.println("Login successful.");
                         return;
                     } else {
-                        System.out.println("Incorrect password, please try again.");
                         continue;
                     }
             }
-        }
     }
 }   
