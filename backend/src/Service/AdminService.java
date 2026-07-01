@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import backend.src.Data.User;
 import backend.src.Db.Database;
@@ -25,8 +27,8 @@ public class AdminService {
         userService.registerUser(u);
     }
 
-    public void viewUsers() {
-        int n = 1;
+    public List<User> viewUsers() {
+        List<User> users = new ArrayList<>();
         String sql = "SELECT * FROM users";
         
         try (Connection c = db.getConnection();
@@ -34,15 +36,18 @@ public class AdminService {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                System.out.println(n + "." + "Username: " + rs.getString("username"));
-                n++;
+                User u = new User();
+                u.setUsername(rs.getString("username"));
+                u.setEmail(rs.getString("email"));
+                u.setIsAdmin(rs.getBoolean("is_admin"));
+                users.add(u);
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        System.out.println("Total users: " + (n - 1));
+        return users;
     }
 
     public void searchUserByUsername(String username) {
@@ -102,4 +107,23 @@ public class AdminService {
         }
     }
 
+    public int countUsers() {
+        String sql = "SELECT COUNT(*) AS total FROM users";
+        
+        try (Connection c = db.getConnection();
+            PreparedStatement ps = c.prepareStatement(sql)) {
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt("total");
+            }
+
+        } 
+        
+        catch (SQLException e) {
+            e.printStackTrace();
+            return 0;
+        }
+        return 0;
+    }
 }

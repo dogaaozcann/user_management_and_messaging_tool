@@ -1,11 +1,11 @@
-package backend.main;
+package backend.ui;
 
 import backend.src.Data.User;
 import java.util.Scanner;
 import backend.src.Db.Database;
 import backend.src.Service.UserService;
 
-public class register {
+public class Register {
     void registerUser(Scanner scanner) {
         Database db = new Database();
         db.createTables();
@@ -13,7 +13,7 @@ public class register {
 
             System.out.println("\nWelcome to the User Registration. Press enter to continue or type ESC to exit.");
 
-            while (!scanner.nextLine().equals("ESC")) {
+            while (!scanner.nextLine().equalsIgnoreCase("ESC")) {
 
                 User newUser = new User();
 
@@ -93,7 +93,7 @@ public class register {
 
                 newUser.setPassword(enteredPassword);
 
-                if (userService.registerUser(newUser)) {
+                if (userService.registerUser(newUser) != null) {
                     return;
                 }
 

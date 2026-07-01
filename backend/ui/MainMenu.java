@@ -1,11 +1,12 @@
-package backend.main;
+package backend.ui;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
-public class app {
+public class MainMenu {
     public static void main(String[] args) {
 
-        Scanner scanner = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
         System.out.println("\nWelcome to the User Management and Messaging Tool!");
         System.out.println("==============================================");
         while (true) {
@@ -17,12 +18,12 @@ public class app {
 
             switch (choice) {
                 case "1":
-                    register register = new register();
+                    Register register = new Register();
                     register.registerUser(scanner);
                     break;
 
                 case "2":
-                    login login = new login();
+                    Login login = new Login();
                     login.loginUser(scanner);
                     break;
 

@@ -92,7 +92,7 @@ public class UserService {
         }
     }
     
-    public boolean registerUser(User u) {
+    public User registerUser(User u) {
 
         // Add user to the database:
         String sql = "INSERT INTO users (username, email, name, surname, birthdate, gender, address, password, is_admin) "
@@ -110,14 +110,12 @@ public class UserService {
             ps.setBoolean(9, false); // Default to non-admin user.
 
             ps.executeUpdate();
-                System.out.println("User registered successfully.");
-                return true;
 
         } catch (SQLException e) {
             e.printStackTrace(); 
-            System.out.println("User registration failed. Please try again.");               
-            return false;
         }
+        
+        return null;
     }
 
     public void printUser(User u) {

@@ -1,0 +1,33 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+        "type": "java",
+        "name": "Client",
+        "request": "launch",
+        "mainClass": "backend.network.Client",
+        "projectName": "user_management_and_messaging_tool_940fe883"
+    },
+    {
+        "type": "java",
+        "name": "Server",
+        "request": "launch",
+        "mainClass": "backend.network.Server",
+        "projectName": "user_management_and_messaging_tool_940fe883"
+    },
+    {
+        "type": "java",
+        "name": "Run Server",
+        "request": "launch",
+        "mainClass": "backend.network.server",
+        "vmArgs": "-Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8"
+    },
+    {
+        "type": "java",
+        "name": "Run Client",
+        "request": "launch",
+        "mainClass": "backend.network.client",
+        "vmArgs": "-Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8"
+    }
+]
+}

@@ -21,7 +21,7 @@ public class Database {
                 email VARCHAR(50) UNIQUE NOT NULL,
                 name VARCHAR(20) NOT NULL,
                 surname VARCHAR(20) NOT NULL,
-                birthdate DATE,
+                birthdate DATE NOT NULL,
                 gender VARCHAR(10),
                 address TEXT,
                 password VARCHAR(50) NOT NULL,
