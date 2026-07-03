@@ -23,8 +23,11 @@ public class AdminService {
 
     //Admin Functions
 
-    public void createUser(User u) {
-        userService.registerUser(u);
+    public String createUser(User u) {
+        if (userService.registerUser(u) == null) {
+            return "ERROR";
+        }
+        return "OK";
     }
 
     public List<User> viewUsers() {

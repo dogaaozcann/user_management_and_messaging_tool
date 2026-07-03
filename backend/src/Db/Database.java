@@ -2,6 +2,7 @@ package backend.src.Db;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -49,6 +50,31 @@ public class Database {
             e.printStackTrace();
         }
     }
+
+    public void seedDefaultAdmin() {
+    String sql = "INSERT INTO users "
+               + "(username, email, name, surname, birthdate, gender, address, password, is_admin) "
+               + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, TRUE) "
+               + "ON CONFLICT (username) DO NOTHING";
+
+    try (Connection conn = getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+
+        ps.setString(1, "admin");
+        ps.setString(2, "admin@admin.com");
+        ps.setString(3, "Admin");
+        ps.setString(4, "Adminoğlu");
+        ps.setDate(5, java.sql.Date.valueOf("2001-01-01"));
+        ps.setString(6, "Other");
+        ps.setString(7, "Ankara");
+        ps.setString(8, "Admin12345.");   
+
+        ps.executeUpdate();
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+}
     public static void main(String[] args) {
         Database db = new Database();
         db.createTables();

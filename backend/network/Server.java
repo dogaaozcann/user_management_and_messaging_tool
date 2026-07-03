@@ -14,6 +14,8 @@ public class Server {
 
         Database db = new Database();
         db.createTables();
+        db.seedDefaultAdmin(); // Seed the default admin user if it doesn't exist.
+        
         Dispatcher d = new Dispatcher(db);
         
         while(true){

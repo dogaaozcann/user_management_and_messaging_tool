@@ -1,12 +1,10 @@
-package backend.ui;
+package frontend;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 public class MainMenu {
-    public static void main(String[] args) {
+    public String mainMenu(Scanner scanner) {
 
-        Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
         System.out.println("\nWelcome to the User Management and Messaging Tool!");
         System.out.println("==============================================");
         while (true) {
@@ -14,23 +12,19 @@ public class MainMenu {
             System.out.println("1. Register - If you are a new user.");
             System.out.println("2. Login - If you already have an account.");
             System.out.println("3. Exit");
-            String choice = scanner.nextLine();
+            String c = scanner.nextLine();
 
-            switch (choice) {
+            switch (c) {
                 case "1":
-                    Register register = new Register();
-                    register.registerUser(scanner);
-                    break;
+                    return new Register().registerUser(scanner);
 
                 case "2":
-                    Login login = new Login();
-                    login.loginUser(scanner);
-                    break;
+                    return new Login().loginUser(scanner);
 
                 case "3":
                     System.out.println("Exiting...");
                     scanner.close();
-                    return;
+                    return "SHUTDOWN";
                         
                 default:
                     System.out.println("Invalid option. Please try again.");

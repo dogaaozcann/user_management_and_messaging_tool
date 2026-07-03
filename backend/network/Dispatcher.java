@@ -83,7 +83,10 @@ public class Dispatcher {
                 u.setPassword(p[8]);
                 u.setIsAdmin(false);
 
-                adminService.createUser(u);
+                String result = adminService.createUser(u);
+                    if (result.equals("ERROR")) {
+                        return "ERROR";
+                    }
 
                 if (userService.searchUser(u.getUsername())) {
                     return "OK|||";
@@ -149,7 +152,19 @@ public class Dispatcher {
                 if (u == null) {
                     return "ERROR";
                 }
-                return "OK|||"+u.getUsername()+"|||"+u.getEmail()+"|||"+u.getName()+"|||"+u.getSurname()+"|||"+u.getBirthdate()+"|||"+u.getGender()+"|||"+u.getAddress();
+                return "OK|||"+u.getUsername()+"|||"+u.getEmail()+"|||"+u.getName()+"|||"+u.getSurname()+"|||"+u.getBirthdate()+"|||"+u.getGender()+"|||"+u.getAddress()+"|||"+u.isAdmin();
+            }
+            case "SETADMIN": {
+                if (!session.isLoggedIn()|| !session.getCurrentUser().isAdmin()) {
+                    return "ERROR|||Not authorized.";
+                }
+                User u = userService.findUser(p[1]);
+                if (u == null) {
+                    return "ERROR";
+                }
+                boolean isAdmin = Boolean.parseBoolean(p[2]);
+                adminService.setAdminStatus(u, isAdmin);
+                return "OK";
             }
 
             //Message Actions
@@ -164,7 +179,12 @@ public class Dispatcher {
                 m.setSubject(p[2]);
                 m.setContent(p[3]);
 
+                if(!userService.searchUser(m.getReceiver())) {
+                    return "ERROR|||Receiver not found.";
+                }
+
                 messageService.sendMessage(m);
+
                 return "OK";
             }
 

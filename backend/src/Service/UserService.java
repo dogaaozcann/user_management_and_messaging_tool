@@ -99,17 +99,35 @@ public class UserService {
         + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection c = db.getConnection();
             PreparedStatement ps = c.prepareStatement(sql)) {
+            
             ps.setString(1, u.getUsername());
+            if (searchUser(u.getUsername())) {
+                System.out.println("Username already exists. Please choose a different username.");
+                return null;
+            }
             ps.setString(2, u.getEmail());
+            
+            if (searchEmail(u.getEmail())) {
+                System.out.println("Email already exists. Please choose a different email.");
+                return null;
+            }
             ps.setString(3, u.getName());
             ps.setString(4, u.getSurname());
+
             ps.setDate(5, java.sql.Date.valueOf(u.getBirthdate()));
+
             ps.setString(6, u.getGender());
+            if (!u.getGender().equalsIgnoreCase("F") && !u.getGender().equalsIgnoreCase("M") && !u.getGender().equalsIgnoreCase("Other")) {
+                System.out.println("Invalid gender input.");
+                return null;
+            }
+
             ps.setString(7, u.getAddress());
             ps.setString(8, u.getPassword());
             ps.setBoolean(9, false); // Default to non-admin user.
 
             ps.executeUpdate();
+            return u; // Return the user object if registration is successful.
 
         } catch (SQLException e) {
             e.printStackTrace(); 

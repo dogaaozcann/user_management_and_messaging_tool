@@ -12,11 +12,13 @@ import backend.src.Db.Database;
 
 public class MessageService {
 
-    private final Database db;
+    private Database db = new Database();
 
     public MessageService(Database db) {
         this.db = db;
     }
+    
+    public UserService userService = new UserService(db);
     
     //Core Function
     
@@ -47,13 +49,18 @@ public class MessageService {
         return null;
     }
 
-    public void sendMessage(Message m) {
+    public Message sendMessage(Message m) {
         String sql = "INSERT INTO messages (sender, receiver, subject, content) VALUES (?, ?, ?, ?)";
         
         try (Connection c = db.getConnection();
             PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setString(1, m.getSender());
             ps.setString(2, m.getReceiver());
+             
+            if(!userService.searchUser(m.getReceiver())) {
+                System.out.println("The receiver does not exist. Please check the username and try again.");
+                return null;
+            }
             ps.setString(3, m.getSubject());
             ps.setString(4, m.getContent());
             ps.executeUpdate();
@@ -63,6 +70,7 @@ public class MessageService {
                 System.out.println("Message sending failed. Please try again.");
         }
 
+        return m;
     }
     
     public List<Message> InMessages(String username, int page) {
