@@ -77,6 +77,7 @@ public class MainMenuAdmin {
                     String rd = in.readLine();
                     if(rd.startsWith("OK")) {
                         System.out.println("\nUser deleted successfully.");
+                        out.println("DELETELOGOUT|||" + usernamed);
                     } else {
                         System.out.println("\nFailed to delete user. Please try again later.");
                     }
@@ -85,7 +86,7 @@ public class MainMenuAdmin {
                     case "4":
                     out.println("VIEWUSERS");
                     String rv = in.readLine();
-                    new ViewUsers().viewUsers(rv);
+                    new ViewUsers().viewUsers(rv, out, in, scanner);
                     break;
                 
                 case "5":

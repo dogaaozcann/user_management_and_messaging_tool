@@ -1,5 +1,6 @@
 package backend.network;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import backend.src.Data.Message;
@@ -23,7 +24,7 @@ public class Dispatcher {
     }
 
     public String handleRequest(Session session, String request) {
-        String[] p = request.split("\\|\\|\\|", -1);
+    try { String[] p = request.split("\\|\\|\\|", -1);
         String action = p[0];
 
         switch (action) {
@@ -44,7 +45,7 @@ public class Dispatcher {
                 u.setEmail(p[2]);
                 u.setName(p[3]);
                 u.setSurname(p[4]);
-                u.setBirthdate(p[5]);
+                u.setBirthdate(java.sql.Date.valueOf(p[5]));
                 u.setGender(p[6]);
                 u.setAddress(p[7]);
                 u.setPassword(p[8]);
@@ -77,7 +78,7 @@ public class Dispatcher {
                 u.setEmail(p[2]);
                 u.setName(p[3]);
                 u.setSurname(p[4]);
-                u.setBirthdate(p[5]);
+                u.setBirthdate(java.sql.Date.valueOf(p[5]));
                 u.setGender(p[6]);
                 u.setAddress(p[7]);
                 u.setPassword(p[8]);
@@ -109,16 +110,17 @@ public class Dispatcher {
                 return "OK";
             }
             case "DELETEUSER": {
-                if (!session.isLoggedIn() || !session.getCurrentUser().isAdmin()) {
-                    return "ERROR|||Not authorized.";
-                }
-                User u = userService.findUser(p[1]);
-                if (u == null) {
-                    return "ERROR";
-                }
-                adminService.deleteUser(u);
-                return "OK";
+                    if (!session.isLoggedIn() || !session.getCurrentUser().isAdmin()) {
+                        return "ERROR|||Not authorized.";
+                    }
+                    User u = userService.findUser(p[1]);
+                    if (u == null) {
+                        return "ERROR";
+                    }
+                    boolean ok = adminService.deleteUser(u);
+                    return ok ? "OK" : "ERROR";
             }
+               
         
             case "VIEWUSERS": {
                 if (!session.isLoggedIn() || !session.getCurrentUser().isAdmin()) {
@@ -199,6 +201,18 @@ public class Dispatcher {
                 }
                 return "OK|||" + m.getId() + "|||" + m.getSender() + "|||" + m.getSubject() + "|||" + m.getContent() + "|||" + m.getTimestamp();
             }  
+
+            case "SEEMSG": {
+                if (!session.isLoggedIn()) {
+                    return "ERROR|||Not logged in.";
+                }
+                String username = session.getCurrentUser().getUsername(); //People can only see their own messages.
+                Message m = messageService.readMessage(username, Integer.parseInt(p[1]));
+                if (m == null) {
+                    return "ERROR|||Message not found.";
+                }
+                return "OK|||" + m.getId() + "|||" + m.getReceiver() + "|||" + m.getSubject() + "|||" + m.getContent() + "|||" + m.getTimestamp() + "|||" + m.isRead();
+            }
             
             case "INBOX": {
                 if (!session.isLoggedIn()) {
@@ -237,9 +251,29 @@ public class Dispatcher {
                 }
                 return sb.toString();
             }
+
+            case "DELETEMSG": {
+                if (!session.isLoggedIn()) {
+                    return "ERROR|||Not logged in.";
+                }
+                String username = session.getCurrentUser().getUsername(); //People can only delete their own messages.
+                Message m = messageService.selectMessage(username, Integer.parseInt(p[1]));
+                if (m == null) {
+                    return "ERROR|||Message not found.";
+                }
+                if (messageService.deleteMessage(m)) {
+                    return "OK";
+                } else {
+                    return "ERROR|||Failed to delete message.";
+                }
+            }
             
             default:
                 return "ERROR|||Unknown action: " + action;
         }
-    
-    }}
+            } catch (SQLException e) {       
+        e.printStackTrace();
+        return "ERROR|||Server error.";
+    }
+    }
+}

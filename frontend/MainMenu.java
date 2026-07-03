@@ -8,7 +8,7 @@ public class MainMenu {
         System.out.println("\nWelcome to the User Management and Messaging Tool!");
         System.out.println("==============================================");
         while (true) {
-            System.out.println("\nPlease choose an option to continue:");
+            System.out.println("Please choose an option to continue:");
             System.out.println("1. Register - If you are a new user.");
             System.out.println("2. Login - If you already have an account.");
             System.out.println("3. Exit");

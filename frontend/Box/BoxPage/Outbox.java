@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
+import frontend.SeeMessage;
 import frontend.Box.BoxDisplay.OutboxDisplay;
 
 public class Outbox {
@@ -19,13 +20,14 @@ public class Outbox {
 
             System.out.println("\nOutbox - Page " + page);
 
-            System.out.println("Receiver\tSubject\tTime");
+            System.out.println("-> ID\t\tReceiver\tSubject\t\tTime");
 
             outboxDisplay.outboxDisplay(response);
 
             System.out.println("\n1. Next Page");
             System.out.println("2. Previous Page");
-            System.out.println("3. Exit Outbox");
+            System.out.println("3. Read Message");
+            System.out.println("4. Exit Outbox");
             String c = scanner.nextLine();
 
             if (page == 1 && c.equals("2")) {
@@ -35,6 +37,13 @@ public class Outbox {
             } else if (c.equals("2")) {
                 page--;
             } else if (c.equals("3")) {
+                System.out.println("\nEnter the message ID to read:");
+                String messageId = scanner.nextLine();  
+                out.println("SEEMSG|||" + messageId);
+                String idResponse = in.readLine();
+                new SeeMessage().seeMessage(idResponse);
+
+            } else if (c.equals("4")) {
                 System.out.println("\nExiting Outbox...");
                 break;
             } else {

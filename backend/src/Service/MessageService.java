@@ -13,18 +13,18 @@ import backend.src.Db.Database;
 public class MessageService {
 
     private Database db = new Database();
-
+    private UserService userService;
     public MessageService(Database db) {
         this.db = db;
+        this.userService = new UserService(db);
     }
-    
-    public UserService userService = new UserService(db);
     
     //Core Function
     
-    public Message selectMessage(String username, int messageId) {
+    public Message selectMessage(String username, int messageId) throws SQLException {
         String sql = "SELECT * FROM messages WHERE id = ? AND (sender = ? OR receiver = ?)";
-        try (Connection c = db.getConnection();
+        Connection c = db.getConnection();
+        try (
             PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setInt(1, messageId);
             ps.setString(2, username);
@@ -38,7 +38,7 @@ public class MessageService {
                 m.setReceiver(rs.getString("receiver"));
                 m.setSubject(rs.getString("subject"));
                 m.setContent(rs.getString("content"));
-                m.setTimestamp(rs.getString("senttime"));
+                m.setTimestamp(rs.getTimestamp("senttime"));
                 m.setIsRead(rs.getBoolean("is_read"));
                 return m;
             }
@@ -49,10 +49,10 @@ public class MessageService {
         return null;
     }
 
-    public Message sendMessage(Message m) {
+    public Message sendMessage(Message m) throws SQLException {
         String sql = "INSERT INTO messages (sender, receiver, subject, content) VALUES (?, ?, ?, ?)";
-        
-        try (Connection c = db.getConnection();
+        Connection c = db.getConnection();
+        try (
             PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setString(1, m.getSender());
             ps.setString(2, m.getReceiver());
@@ -73,11 +73,11 @@ public class MessageService {
         return m;
     }
     
-    public List<Message> InMessages(String username, int page) {
+    public List<Message> InMessages(String username, int page) throws SQLException {
     List<Message> messages = new ArrayList<>();
     String sql = "SELECT * FROM messages WHERE receiver = ? ORDER BY senttime DESC LIMIT 10 OFFSET ?";
-
-    try (Connection c = db.getConnection();
+    Connection c = db.getConnection();
+    try (
         PreparedStatement ps = c.prepareStatement(sql)) {
         ps.setString(1, username);
         ps.setInt(2, (page - 1) * 10);
@@ -90,7 +90,7 @@ public class MessageService {
             m.setReceiver(rs.getString("receiver"));
             m.setSubject(rs.getString("subject"));
             m.setContent(rs.getString("content"));
-            m.setTimestamp(rs.getString("senttime"));
+            m.setTimestamp(rs.getTimestamp("senttime"));
             m.setIsRead(rs.getBoolean("is_read"));
             messages.add(m);
         }
@@ -101,11 +101,12 @@ public class MessageService {
     return messages;
 }
 
-    public List<Message> OutMessages(String username, int page) {
+    public List<Message> OutMessages(String username, int page) throws SQLException {
         List<Message> messages = new ArrayList<>();
         String sql = "SELECT * FROM messages WHERE sender = ? ORDER BY senttime DESC LIMIT 10 OFFSET ?";
 
-        try (Connection c = db.getConnection();
+        Connection c = db.getConnection();
+        try (
             PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setString(1, username);
             ps.setInt(2, (page - 1) * 10);
@@ -117,7 +118,7 @@ public class MessageService {
                 m.setReceiver(rs.getString("receiver"));
                 m.setSubject(rs.getString("subject"));
                 m.setContent(rs.getString("content"));
-                m.setTimestamp(rs.getString("senttime"));
+                m.setTimestamp(rs.getTimestamp("senttime"));
                 m.setId(rs.getInt("id"));
                 messages.add(m);
             }
@@ -131,26 +132,19 @@ public class MessageService {
 
     }
 
-    public Message readMessage(String username, int messageId) {
+    public Message readMessage(String username, int messageId) throws SQLException {
         Message m = selectMessage(username, messageId);
-
-        try (Connection c = db.getConnection()) {       
-            markAsRead(m);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("Failed to mark the message as read. Please try again.");
-        }
-  
-        try (Connection c = db.getConnection()) {
-            printMessage(m);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("Failed to retrieve the message. Please try again.");
-            }
+        if (m == null) return null;
+        markAsRead(m);
+        printMessage(m);
         return m;
-        }
-    
-    
+    }
+    public Message seeMessage(String username, int messageId) throws SQLException {
+        Message m = selectMessage(username, messageId);
+        if (m == null) return null;
+        printMessage(m);
+        return m;
+    }
     public void printMessage(Message m) {
         System.out.println("Sender: " + m.getSender());
         System.out.println("Receiver: " + m.getReceiver());
@@ -171,22 +165,26 @@ public class MessageService {
         }
     }
 
-    public void deleteMessage(Message m) {
+    public boolean deleteMessage(Message m) throws SQLException {
         String sql = "DELETE FROM messages WHERE id = ?";
-        try (Connection c = db.getConnection();
+        Connection c = db.getConnection();
+        try (
             PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setInt(1, m.getId());
-            ps.executeUpdate();
-                System.out.println("Message deleted successfully.");
+            int r = ps.executeUpdate();
+            System.out.println("Message deleted successfully.");
+            return r > 0;
         } catch (SQLException e) {
             e.printStackTrace();
                 System.out.println("Failed to delete the message. Please try again.");
+                return false;
         }
     }
 
-    public int countMessages(String username) {
+    public int countMessages(String username) throws SQLException {
         String sql = "SELECT COUNT(*) AS total FROM messages WHERE receiver = ? OR sender = ?";
-        try (Connection c = db.getConnection();
+        Connection c = db.getConnection();
+        try (
             PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setString(1, username);
             ps.setString(2, username);

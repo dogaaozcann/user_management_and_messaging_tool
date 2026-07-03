@@ -18,10 +18,10 @@ public class UserService {
 
     //Core Function
 
-    public User findUser(String username) {
+    public User findUser(String username) throws SQLException {
         String sql = "SELECT * FROM users WHERE username = ?";
-        
-        try (Connection c = db.getConnection();
+        Connection c = db.getConnection();
+        try (
             PreparedStatement pstmt = c.prepareStatement(sql)) {
             pstmt.setString(1, username);
             ResultSet rs = pstmt.executeQuery();
@@ -32,7 +32,7 @@ public class UserService {
                 user.setEmail(rs.getString("email"));
                 user.setName(rs.getString("name"));
                 user.setSurname(rs.getString("surname"));
-                user.setBirthdate(rs.getDate("birthdate").toString());
+                user.setBirthdate(rs.getDate("birthdate"));
                 user.setGender(rs.getString("gender"));
                 user.setAddress(rs.getString("address"));
                 user.setPassword(rs.getString("password"));
@@ -49,14 +49,15 @@ public class UserService {
 
     //User Control Functions
 
-    public boolean searchUser(String username) {
+    public boolean searchUser(String username) throws SQLException {
         return findUser(username) != null;
     }
 
-    public boolean searchEmail(String email) {
+    public boolean searchEmail(String email) throws SQLException {
         String sql = "SELECT * FROM users WHERE email = ?";
         
-        try (Connection c = db.getConnection();
+        Connection c = db.getConnection();
+        try (
             PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setString(1, email);
             ResultSet rs = ps.executeQuery();
@@ -75,7 +76,7 @@ public class UserService {
         return currentUser.getPassword().equals(password);
     }
 
-    public User loginUser(String username, String enteredPassword) {
+    public User loginUser(String username, String enteredPassword) throws SQLException {
         User currentUser = findUser(username);
        
         if(currentUser == null) {
@@ -92,12 +93,13 @@ public class UserService {
         }
     }
     
-    public User registerUser(User u) {
+    public User registerUser(User u) throws SQLException {
 
         // Add user to the database:
         String sql = "INSERT INTO users (username, email, name, surname, birthdate, gender, address, password, is_admin) "
         + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try (Connection c = db.getConnection();
+        Connection c = db.getConnection();
+        try (
             PreparedStatement ps = c.prepareStatement(sql)) {
             
             ps.setString(1, u.getUsername());
@@ -114,7 +116,7 @@ public class UserService {
             ps.setString(3, u.getName());
             ps.setString(4, u.getSurname());
 
-            ps.setDate(5, java.sql.Date.valueOf(u.getBirthdate()));
+            ps.setDate(5, u.getBirthdate());
 
             ps.setString(6, u.getGender());
             if (!u.getGender().equalsIgnoreCase("F") && !u.getGender().equalsIgnoreCase("M") && !u.getGender().equalsIgnoreCase("Other")) {
@@ -127,7 +129,6 @@ public class UserService {
             ps.setBoolean(9, false); // Default to non-admin user.
 
             ps.executeUpdate();
-            return u; // Return the user object if registration is successful.
 
         } catch (SQLException e) {
             e.printStackTrace(); 

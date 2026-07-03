@@ -10,9 +10,13 @@ public class Database {
     private static final String URL = "jdbc:postgresql://localhost:5432/ummt";
     private static final String USER = "postgres";
     private static final String PASS = "Do12345.";
-    
+    private Connection connection;
+
     public Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USER, PASS);
+        if(connection == null || connection.isClosed()) {
+            connection = DriverManager.getConnection(URL, USER, PASS);
+        }
+        return connection;
     }
 
     public void createTables() {

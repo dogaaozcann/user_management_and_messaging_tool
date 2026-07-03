@@ -1,5 +1,7 @@
 package backend.src.Data;
 
+import java.sql.Date;
+
 public class User {
     
     private String username;
@@ -34,11 +36,11 @@ public class User {
         this.surname = surname;
     }
 
-    private String birthdate;
-    public String getBirthdate() {
+    private Date birthdate;
+    public Date getBirthdate() {
         return birthdate;
     }
-    public void setBirthdate(String birthdate) {
+    public void setBirthdate(Date birthdate) {
         this.birthdate = birthdate;
     }
 

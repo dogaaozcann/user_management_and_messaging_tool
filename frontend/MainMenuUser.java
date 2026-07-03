@@ -7,7 +7,7 @@ public class MainMenuUser {
         System.out.println("\nWelcome to the User Main Menu.");
         System.out.println("==============================================");
         while (true) {
-            System.out.println("\nPlease choose an option to continue:");
+            System.out.println("Please choose an option to continue:");
             System.out.println("1. INBOX - View your messages.");
             System.out.println("2. OUTBOX - View sent messages.");
             System.out.println("3. Send Message");

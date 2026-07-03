@@ -1,5 +1,7 @@
 package backend.src.Data;
 
+import java.sql.Timestamp;
+
 public class Message {
 
     private int id;
@@ -26,11 +28,11 @@ public class Message {
         this.receiver = receiver;
     }
 
-    private String timestamp;
-    public String getTimestamp() {
+    private Timestamp timestamp;
+    public Timestamp getTimestamp() {
         return timestamp;
     }
-    public void setTimestamp(String timestamp) {
+    public void setTimestamp(Timestamp timestamp) {
         this.timestamp = timestamp;
     }
 

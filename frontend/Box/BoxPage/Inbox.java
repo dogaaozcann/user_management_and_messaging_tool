@@ -20,14 +20,15 @@ public class Inbox {
 
             System.out.println("\nInbox - Page " + page);
 
-            System.out.println("Sender\tSubject\tTime\tStatus");
+            System.out.println("-> ID\t\tSender\t\tSubject\t\tTime\t\t\tStatus");
 
             inboxDisplay.inboxDisplay(response);
 
             System.out.println("\n1. Next Page");
             System.out.println("2. Previous Page");
             System.out.println("3. Read Message");
-            System.out.println("4. Exit Inbox");
+            System.out.println("4. Delete Message");
+            System.out.println("5. Exit Inbox");
             String c = scanner.nextLine();
 
             if (page == 1 && c.equals("2")) {
@@ -43,12 +44,22 @@ public class Inbox {
                 String idResponse = in.readLine();
                 new ReadMessage().readMessage(idResponse);
             } else if (c.equals("4")) {
+                System.out.println("\nEnter the message ID to delete:");
+                String messageId = scanner.nextLine();
+                out.println("DELETEMSG|||" + messageId);
+                String deleteResponse = in.readLine();
+                if (deleteResponse.startsWith("OK")) {
+                    System.out.println("\nMessage deleted successfully.");
+                } else {
+                    System.out.println("\nFailed to delete message. Please try again later.");
+                }
+            } else if (c.equals("5")) {
                 System.out.println("\nExiting Inbox...");
                 break;
             } else {
                 System.out.println("\nInvalid option. Please try again.");
             }
-
-
+        }
     }
-}}
+}
+                   
