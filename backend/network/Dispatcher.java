@@ -66,6 +66,19 @@ public class Dispatcher {
                 return "OK";
             }
 
+            case "CHECKUSER": { // Check if the user is exists.
+                if (!session.isLoggedIn()) {
+                    return "ERROR|||Not logged in.";
+                }
+                String username = session.getCurrentUser().getUsername();
+                if (userService.searchUser(username)) {
+                    return "OK";
+                } else {
+                    session.setCurrentUser(null); //Logout the user if the account is deleted.
+                    return "ERROR|||Account deleted.";
+                }
+            }
+
             //Admin Actions
             
             case "ADDUSER": {
@@ -144,7 +157,7 @@ public class Dispatcher {
                 if (u == null) {
                     return "ERROR";
                 }
-                return "OK|||"+u.getUsername()+"|||"+u.getEmail()+"|||"+u.getName()+"|||"+u.getSurname()+"|||"+u.getBirthdate()+"|||"+u.getGender()+"|||"+u.getAddress();
+                return "OK|||"+u.getUsername()+"|||"+u.getEmail()+"|||"+u.getName()+"|||"+u.getSurname()+"|||"+u.getBirthdate()+"|||"+u.getGender()+"|||"+u.getAddress()+"|||" + u.isAdmin();
             }
             case "SEARCHUSER": {
                 if (!session.isLoggedIn()|| !session.getCurrentUser().isAdmin()) {
@@ -267,7 +280,7 @@ public class Dispatcher {
                     return "ERROR|||Failed to delete message.";
                 }
             }
-            
+
             default:
                 return "ERROR|||Unknown action: " + action;
         }

@@ -50,6 +50,15 @@ public class Client {
                     boolean isAdmin = Boolean.parseBoolean(parts[2]);
                 
                 while (true) {
+
+                        out.println("CHECKUSER");
+                        String checkResponse = in.readLine();
+
+                        if (checkResponse.startsWith("ERROR")) {
+                            System.out.println("\nYour account has been deleted. Logging out...");
+                            break;
+                        }
+                        
                         MainMenuUser userMenu = new MainMenuUser();
                         String userRequest = userMenu.mainMenuUser(scanner, isAdmin);
 

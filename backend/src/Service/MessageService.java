@@ -172,8 +172,14 @@ public class MessageService {
             PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setInt(1, m.getId());
             int r = ps.executeUpdate();
-            System.out.println("Message deleted successfully.");
-            return r > 0;
+            if(r > 0) {
+                System.out.println("Message deleted successfully.");
+                return true;
+            } else {
+                System.out.println("No message found with the given ID.");
+                return false;
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
                 System.out.println("Failed to delete the message. Please try again.");

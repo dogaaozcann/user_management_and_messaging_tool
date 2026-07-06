@@ -96,7 +96,7 @@ public class AdminService {
         ps2.executeUpdate();
         ps.setString(1, u.getUsername());
         int rows = ps.executeUpdate();
-        return rows > 0;      // gerçekten silindi mi?
+        return rows > 0;      
 
         } catch (SQLException e) {
             e.printStackTrace();

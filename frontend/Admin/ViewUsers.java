@@ -48,7 +48,7 @@ public class ViewUsers {
                     String[] userDetails = ud.split("\\|\\|\\|");
                     System.out.println("\nUser Details for: " + username);
                     System.out.println("Username\tEmail\t\tName\tSurname\t\tBirthdate\tGender\tAddress\t\tAdmin Status");
-                    System.out.println(userDetails[1] + "\t" + userDetails[2] + "\t" + userDetails[3] + "\t" + userDetails[4] + "\t" + userDetails[5] + "\t" + userDetails[6] + "\t" + userDetails[7] + "\t" + userDetails[8]);
+                    System.out.println(userDetails[1] + "\t" + userDetails[2] + "\t" + userDetails[3] + "\t" + userDetails[4] + "\t\t" + userDetails[5] + "\t" + userDetails[6] + "\t" + userDetails[7] + "\t" + userDetails[8]);
                     }   
                 else if(ud.startsWith("ERROR")) {
                     System.out.println("\nUser not found. Please try again.");

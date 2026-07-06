@@ -129,11 +129,11 @@ public class UserService {
             ps.setBoolean(9, false); // Default to non-admin user.
 
             ps.executeUpdate();
+            return u;
 
         } catch (SQLException e) {
             e.printStackTrace(); 
         }
-        
         return null;
     }
 
